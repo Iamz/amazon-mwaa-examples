@@ -39,7 +39,7 @@ export type Config = MwaaMainStackProps;
 function configuration(): Config {
   return {
     region: envOrError('CDK_DEFAULT_REGION'),
-    account: envOrError('CDK_DEFAULT_ACCOUNT'),
+    account: envOrError('CDK_DEFAULT_ACCOUNT', true),
     mainStackName: envOrError('MWAA_MAIN_STACK_NAME'),
     environmentName: envOrError('MWAA_ENV_NAME'),
     sourceBucketName: envOrError('MWAA_SOURCE_BUCKET_NAME'),
@@ -71,7 +71,7 @@ function configuration(): Config {
   };
 }
 
-function envOrError<T>(field: string): T {
+function envOrError<T>(field: string, noConvert?: boolean): T {
   if (!process.env[field]) {
     throw new Error(`The required environment variable [${field}] is missing!`);
   }
@@ -81,7 +81,7 @@ function envOrError<T>(field: string): T {
     throw new Error(`The required environment variable [${field}] is empty!`);
   }
 
-  return convertToType(field, value) as T;
+  return (noConvert ? value : convertToType(field, value)) as T;
 }
 
 function envOrDefault<T>(field: string, defaultValue: T): T {
