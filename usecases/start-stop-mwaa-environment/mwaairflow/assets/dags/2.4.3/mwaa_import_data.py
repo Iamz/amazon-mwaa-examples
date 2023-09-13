@@ -126,7 +126,7 @@ def activate_dags(**context):
         with open(tempfile, 'r') as f:
             cursor = conn.cursor()
             cursor.copy_expert(
-                "COPY active_dags FROM STDIN WITH (FORMAT CSV, HEADER TRUE)", f)
+                "COPY active_dags FROM STDIN WITH (FORMAT CSV, HEADER FALSE)", f)
             conn.commit()
         session.execute(text(
             f"UPDATE dag d SET is_paused=false FROM active_dags ed WHERE d.dag_id = ed.dag_id;"))
